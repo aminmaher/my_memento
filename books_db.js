@@ -34,19 +34,9 @@ GBOOK.prototype.barcode = function(code) {
 @param {string} id - The resource identifier.
 */
 GBOOK.prototype.extra = function(id) {
-    var resultJson = http().get("https://www.googleapis.com/books/v1/volumes?q=" + id);
+    var resultJson = http().get("https://www.googleapis.com/books/v1/volumes?q=id:" + id);
     var result = JSON.parse(resultJson.body); 
     if (result.images !== undefined) 
-        result['images'] = result.images.map(function(e) { return e.uri; }).join(); 
-    if (result.videos !== undefined) 
-        result['videos'] = result.videos.map(function(e) { return e.uri; }).join();     
-    if (result.artists !== undefined)
-        result['artists'] = result.artists.map(function(e) { return e.name; }).join();   
-    if (result.tracklist !== undefined)  
-        result['tracklist'] = result.tracklist.map(function(e) { return e.position + ". " + e.title + " " + e.duration; }).join("\n");     
-    if (result.styles !== undefined)  
-        result['styles'] = result.styles.join();     
-    if (result.genres !== undefined)
-        result['genres'] = result.genres.join();        
+        result['images'] = result.images.map(function(e) { return e.uri; }).join();     
     return result;
 }
