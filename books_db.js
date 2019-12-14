@@ -1,38 +1,31 @@
 /**
-The data source for obtaining information from discogs.com.
-@param {string} apiKey - Consumer key.
-@param {string} apiSecret - Consumer secret. 
-@param {string} type - One of release, master, artist.
-Consumer key and Consumer secret can be obtained by this link : https://www.discogs.com/settings/developers
-More info about Discogs API see here: https://www.discogs.com/developers
+The data source for obtaining information from googleapis.com.
+
 @example 
-var discogs = new Discogs("Consumer key" ,"Consumer secret" , "release" );
-var r = discogs.search(query);
-result( r , function(id) { return discogs.extra(id);});
+var gBook = new GBOOK();
+var r = gBook.search(query);
+result( r , function(title) { return gBook.extra(title);});
 */
-function Discogs (apiKey , apiSecret, type) {
-    this.apiKey = apiKey;
-    this.apiSecret = apiSecret;
-    this.type = type;
+function GBOOK () {
 }
 
 
 /**
-Issue a search query to Discogs database.
+Issue a search query to Google Books database.
 @param {string} query - Search query.
 */
-Discogs.prototype.search = function(query) {
-  var result = http().get("https://api.discogs.com/database/search?q=" + encodeURIComponent(query) + "&key=" + this.apiKey + "&secret=" + this.apiSecret + "&type=" + this.type);
+GBOOK.prototype.search = function(query) {
+  var result = http().get("https://www.googleapis.com/books/v1/volumes?q=intitle:" + encodeURIComponent(query));
   var json = JSON.parse(result.body);
   return json.results;  
 }
 
 /**
-Issue a search query to Discogs database.
+Issue a search query to Google Books database.
 @param {string} code - Search barcodes.
 */
-Discogs.prototype.barcode = function(code) {
-  var result = http().get("https://api.discogs.com/database/search?barcode=" + encodeURIComponent(code) + "&key=" + this.apiKey + "&secret=" + this.apiSecret + "&type=" + this.type);
+GBOOK.prototype.barcode = function(code) {
+  var result = http().get("https://www.googleapis.com/books/v1/volumes?q=isbn:" + encodeURIComponent(code));
   var json = JSON.parse(result.body);
   return json.results;  
 }
@@ -40,8 +33,8 @@ Discogs.prototype.barcode = function(code) {
 /**
 @param {string} id - The resource identifier.
 */
-Discogs.prototype.extra = function(id) {
-    var resultJson = http().get("https://api.discogs.com/" + this.type + "s/" + id + "?key=" + this.apiKey + "&secret=" + this.apiSecret);
+GBOOK.prototype.extra = function(id) {
+    var resultJson = http().get("https://www.googleapis.com/books/v1/volumes?q=" + id);
     var result = JSON.parse(resultJson.body); 
     if (result.images !== undefined) 
         result['images'] = result.images.map(function(e) { return e.uri; }).join(); 
