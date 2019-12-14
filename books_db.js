@@ -36,7 +36,7 @@ GBOOK.prototype.barcode = function(code) {
 GBOOK.prototype.extra = function(id) {
     var resultJson = http().get("https://www.googleapis.com/books/v1/volumes?q=id:" + id);
     var result = JSON.parse(resultJson.body); 
-    if (result.images !== undefined) 
-        result['images'] = result.images.map(function(e) { return e.uri; }).join();     
+    if (result.imageLinks !== undefined) 
+        result['imageLinks'] = result.imageLinks.map(function(e) { return e.thumbnail; }).join();
     return result;
 }
